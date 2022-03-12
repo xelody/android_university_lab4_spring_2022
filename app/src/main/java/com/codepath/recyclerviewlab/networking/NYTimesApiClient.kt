@@ -27,7 +27,7 @@ private const val API_KEY = "jqVvwrlMDL9ZEA7DLGCFzagPeKhiFbg9"
 
 private const val API_FILTER = "headline, web_url, snippet, pub_date, word_count, print_page, print_section, section_name"
 private const val BEGIN_DATE = "20100101"
-private const val SORT_BY = "relevance"
+private const val SORT_BY = "newest"
 
 class NYTimesApiClient {
     private val nyTimesService: NYTimesService

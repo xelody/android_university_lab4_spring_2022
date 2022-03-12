@@ -25,10 +25,13 @@ class ArticleResultFragment : Fragment() {
     private lateinit var list: RecyclerView
     private lateinit var progressSpinner: ContentLoadingProgressBar
 
+    private var currentQuery: String? = null
+
     override fun onPrepareOptionsMenu(menu: Menu) {
         val item = menu.findItem(R.id.action_search).actionView as SearchView
         item.setOnQueryTextListener(object : OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
+                currentQuery = query
                 loadNewArticlesByQuery(query)
                 return false
             }
@@ -53,8 +56,15 @@ class ArticleResultFragment : Fragment() {
         list = view.findViewById(R.id.list)
         progressSpinner = view.findViewById(R.id.progress)
 
-        list.layoutManager = LinearLayoutManager(view.context)
+        val linearLayoutManager = LinearLayoutManager(view.context)
+        list.layoutManager = linearLayoutManager
         list.adapter = adapter
+
+        list.addOnScrollListener(object : EndlessScrollListener(linearLayoutManager) {
+            override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
+                loadArticlesByPage(page)
+            }
+        })
 
         return view
     }
@@ -89,5 +99,27 @@ class ArticleResultFragment : Fragment() {
 
     private fun loadArticlesByPage(page: Int) {
         // TODO(Checkpoint 4): Implement this method to do infinite scroll
+        client.getArticlesByQuery(
+            articlesListResponse = object : CallbackResponse<List<Article>> {
+                override fun onSuccess(model: List<Article>) {
+                    Log.d(
+                        ArticleResultFragment::class.java.simpleName,
+                        "Success: page - $page for $currentQuery"
+                    )
+                    adapter.addArticles(newArticles = model)
+                    adapter.notifyDataSetChanged()
+                }
+
+                override fun onFailure(error: Throwable?) {
+                    Toast.makeText(context, error?.message, Toast.LENGTH_SHORT).show()
+                    Log.d(
+                        ArticleResultFragment::class.java.simpleName,
+                        "failure to load page: $page"
+                    )
+                }
+            },
+            query = currentQuery,
+            pageNumber = page
+        )
     }
 }
