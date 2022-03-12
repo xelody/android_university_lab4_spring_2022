@@ -3,11 +3,15 @@ package com.codepath.recyclerviewlab
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import coil.imageLoader
+import coil.load
 import com.codepath.recyclerviewlab.models.Article
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
+
 
 class ArticleResultsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -77,6 +81,7 @@ class ArticleResultsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         override var publicationDate: TextView? = null
         override var headline: TextView? = null
         override var snippet: TextView? = null
+        override var image: ImageView? = null
 
         var firstPageHeader: TextView? = null
 
@@ -94,6 +99,7 @@ class ArticleResultsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         var publicationDate: TextView?
         var headline: TextView?
         var snippet: TextView?
+        var image: ImageView?
 
         fun bind(itemView: View, article: Article) {
             publicationDate = itemView.findViewById(R.id.article_pub_date)
@@ -103,30 +109,18 @@ class ArticleResultsAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             publicationDate?.text = getParsedDate(article.publishDate)
             headline?.text = article.headline?.main
             snippet?.text = article.snippet
+
+            article.multimedia?.firstOrNull()
+                ?.let { image?.load(it.url, itemView.context.imageLoader) }
         }
     }
 
-    class ArticleViewHolder(private val itemView: View) : RecyclerView.ViewHolder(itemView),
+    class ArticleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
         ArticleVH {
 
         override var publicationDate: TextView? = null
         override var headline: TextView? = null
         override var snippet: TextView? = null
-
-        fun bind(article: Article) {
-            publicationDate = itemView.findViewById(R.id.article_pub_date)
-            headline = itemView.findViewById(R.id.article_headline)
-            snippet = itemView.findViewById(R.id.article_snippet)
-
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:s+SSSS", Locale.US)
-            val date = article.publishDate?.let { dateFormat.parse(it) }
-
-            val targetDateFormat = SimpleDateFormat("MM/dd/yyyy", Locale.US)
-            val targetDate = targetDateFormat.format(date)
-
-            publicationDate?.text = targetDate
-            headline?.text = article.headline?.main
-            snippet?.text = article.snippet
-        }
+        override var image: ImageView? = null
     }
 }
