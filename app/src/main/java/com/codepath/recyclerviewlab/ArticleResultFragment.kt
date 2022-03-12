@@ -84,7 +84,7 @@ class ArticleResultFragment : Fragment() {
 
             override fun onFailure(error: Throwable?) {
                 Toast.makeText(context, error?.message, Toast.LENGTH_SHORT).show()
-                Log.d(ArticleResultFragment::class.java.simpleName, "failure")
+                Log.d(ArticleResultFragment::class.java.simpleName, "failure: error ${error?.message}")
             }
         }
 
@@ -114,7 +114,7 @@ class ArticleResultFragment : Fragment() {
                     Toast.makeText(context, error?.message, Toast.LENGTH_SHORT).show()
                     Log.d(
                         ArticleResultFragment::class.java.simpleName,
-                        "failure to load page: $page"
+                        "failed to load page: $page"
                     )
                 }
             },
