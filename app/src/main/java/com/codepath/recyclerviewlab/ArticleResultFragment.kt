@@ -13,7 +13,6 @@ import androidx.core.widget.ContentLoadingProgressBar
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.codepath.recyclerviewlab.R.layout
 import com.codepath.recyclerviewlab.models.Article
 import com.codepath.recyclerviewlab.networking.CallbackResponse
 import com.codepath.recyclerviewlab.networking.NYTimesApiClient
@@ -62,7 +61,6 @@ class ArticleResultFragment : Fragment() {
 
     private fun loadNewArticlesByQuery(query: String) {
         Log.d("ArticleResultFragment", "loading articles for query $query")
-        Toast.makeText(context, "Loading articles for \'$query\'", Toast.LENGTH_SHORT).show()
         // TODO(Checkpoint 3): Implement this method to populate articles
 
         val response = object : CallbackResponse<List<Article>> {
@@ -79,6 +77,9 @@ class ArticleResultFragment : Fragment() {
                 Log.d(ArticleResultFragment::class.java.simpleName, "failure")
             }
         }
+
+        Toast.makeText(context, "Loading articles for \'$query\'", Toast.LENGTH_SHORT).show()
+        progressSpinner.show()
 
         client.getArticlesByQuery(
             articlesListResponse = response,
